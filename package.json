@@ -14,10 +14,37 @@
   "contributes": {
     "commands": [
       {
-        "command": "prisma-visualizer.helloWorld",
-        "title": "Hello World"
+        "command": "prisma-visualizer.showERD",
+        "title": "Prisma Visualizer: Open ERD",
+        "category": "Prisma Visualizer"
       }
-    ]
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "prisma-visualizer.showERD",
+          "when": "resourceExtname == .prisma || resourceLangId == prisma",
+          "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "prisma-visualizer.showERD",
+          "when": "resourceExtname == .prisma || resourceLangId == prisma",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Prisma Visualizer",
+      "properties": {
+        "prisma-visualizer.schemaPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to schema.prisma, relative to the workspace root. If empty, defaults to prisma/schema.prisma, falling back to the active .prisma editor."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
@@ -29,9 +56,10 @@
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
-    "check-types": "tsc --noEmit",
+    "check-types": "tsc --noEmit && tsc -p src/webview",
     "lint": "eslint src",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "test:unit": "tsc -p . --outDir out && mocha \"out/core/**/*.test.js\""
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
@@ -41,6 +69,7 @@
     "@vscode/test-electron": "^3.0.0",
     "esbuild": "^0.28.1",
     "eslint": "^10.5.0",
+    "mocha": "^11.8.0",
     "npm-run-all": "^4.1.5",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.61.1"
@@ -48,5 +77,9 @@
   "overrides": {
     "diff": "^8.0.4",
     "serialize-javascript": "^7.0.6"
+  },
+  "dependencies": {
+    "@dagrejs/dagre": "^3.1.1",
+    "@mrleebo/prisma-ast": "^0.16.0"
   }
 }
