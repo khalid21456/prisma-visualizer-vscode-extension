@@ -1,0 +1,15 @@
+model Organization {
+  orgCode String
+  region  String
+  members Membership[]
+
+  @@id([orgCode, region])
+}
+
+model Membership {
+  id            Int          @id @default(autoincrement())
+  org           Organization @relation(fields: [orgCode, orgRegion], references: [orgCode, region])
+  orgCode       String
+  orgRegion     String
+  role          String
+}

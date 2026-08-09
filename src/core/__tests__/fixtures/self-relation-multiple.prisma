@@ -1,0 +1,8 @@
+model User {
+  id           Int    @id @default(autoincrement())
+  name         String
+  friendsOf    User[] @relation("Friends")
+  friendedBy   User[] @relation("Friends")
+  blocked      User[] @relation("Blocks")
+  blockedBy    User[] @relation("Blocks")
+}

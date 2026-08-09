@@ -1,0 +1,12 @@
+enum Role {
+  ADMIN
+  USER
+  GUEST
+}
+
+model User {
+  id        Int    @id @default(autoincrement())
+  name      String
+  role      Role   @default(USER)
+  pastRoles Role[]
+}

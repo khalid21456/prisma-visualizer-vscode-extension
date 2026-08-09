@@ -1,0 +1,15 @@
+model User {
+  id             Int    @id @default(autoincrement())
+  name           String
+  authoredPosts  Post[] @relation("PostAuthor")
+  editedPosts    Post[] @relation("PostEditor")
+}
+
+model Post {
+  id             Int    @id @default(autoincrement())
+  title          String
+  author         User   @relation("PostAuthor", fields: [authorId], references: [id])
+  authorId       Int
+  lastEditedBy   User   @relation("PostEditor", fields: [editorId], references: [id])
+  editorId       Int
+}
