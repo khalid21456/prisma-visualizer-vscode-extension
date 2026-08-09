@@ -1,71 +1,31 @@
-# prisma-visualizer README
+# Prisma Visualizer
 
-This is the README for your extension "prisma-visualizer". After writing up a brief description, we recommend including the following sections.
+Visualize a `schema.prisma` file as an interactive entity-relationship diagram, right beside your editor.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+- **Prisma Visualizer: Open ERD** command (also available from the title bar and context menu of a `.prisma` file) opens an interactive diagram beside the schema editor.
+- Entity boxes list fields with their type, and mark primary keys, foreign keys, and unique columns.
+- Relations are drawn with cardinality labels (`1`/`N`), including self-relations and multiple relations between the same two models.
+- Pan (drag the background), zoom (scroll wheel), drag individual entities to reposition them, and click an entity to highlight its relations.
+- The diagram refreshes automatically when the schema is saved, preserving your pan/zoom/drag state.
+- Parse errors and a missing schema file are shown as a banner without discarding the last successfully rendered diagram.
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+No external dependencies. The [Prisma language extension](https://marketplace.visualstudio.com/items?itemName=Prisma.prisma) is recommended for `.prisma` syntax highlighting, but not required.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+This extension contributes the following setting:
 
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+- `prisma-visualizer.schemaPath`: Path to `schema.prisma`, relative to the workspace root. If empty, defaults to `prisma/schema.prisma`, falling back to the active `.prisma` editor.
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- Only a single `schema.prisma` file is supported; Prisma's multi-file schema folders are not merged.
+- Composite `@@unique`/`@@id` block attributes aren't considered when distinguishing one-to-one from one-to-many relations (only field-level `@id`/`@unique` are).
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+See [CHANGELOG.md](./CHANGELOG.md).
