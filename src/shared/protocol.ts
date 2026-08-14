@@ -5,4 +5,4 @@ export type HostToWebviewMessage =
 	| { type: 'parseError'; revision: number; message: string; line?: number; column?: number }
 	| { type: 'schemaMissing'; revision: number; path: string };
 
-export type WebviewToHostMessage = { type: 'ready' };
+export type WebviewToHostMessage = { type: 'ready' } | { type: 'export'; format: 'png'; dataBase64: string; suggestedName: string };
