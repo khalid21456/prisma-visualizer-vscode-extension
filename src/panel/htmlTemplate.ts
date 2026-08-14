@@ -17,7 +17,7 @@ export function getHtmlForWebview(webview: vscode.Webview, extensionUri: vscode.
 <html lang="en">
 <head>
 	<meta charset="UTF-8" />
-	<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline' ${webview.cspSource}; script-src 'nonce-${cspNonce}';" />
+	<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline' ${webview.cspSource}; script-src 'nonce-${cspNonce}'; img-src data:;" />
 	<title>Prisma ERD</title>
 	<style>
 		html, body, #app { height: 100%; margin: 0; padding: 0; }
@@ -36,12 +36,29 @@ export function getHtmlForWebview(webview: vscode.Webview, extensionUri: vscode.
 			z-index: 1;
 		}
 		#banner.visible { display: block; }
+		#export-button {
+			position: absolute;
+			bottom: 12px;
+			right: 12px;
+			z-index: 2;
+			padding: 6px 12px;
+			font-size: 12px;
+			font-family: var(--vscode-font-family);
+			border-radius: 4px;
+			border: 1px solid var(--vscode-button-border, transparent);
+			background: var(--vscode-button-background, #0e639c);
+			color: var(--vscode-button-foreground, #ffffff);
+			cursor: pointer;
+		}
+		#export-button:hover:not(:disabled) { background: var(--vscode-button-hoverBackground, #1177bb); }
+		#export-button:disabled { opacity: 0.5; cursor: default; }
 	</style>
 </head>
 <body>
 	<div id="app">
 		<div id="diagram"></div>
 		<div id="banner"></div>
+		<button id="export-button" type="button" disabled>Export PNG</button>
 	</div>
 	<script nonce="${cspNonce}" src="${scriptUri}"></script>
 </body>
