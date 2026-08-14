@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { GraphModel } from '../shared/graphModel';
 import { HostToWebviewMessage, WebviewToHostMessage } from '../shared/protocol';
+import { exportDiagramImage } from './exportImage';
 import { watchSchema } from './fileWatcher';
 import { getHtmlForWebview } from './htmlTemplate';
 
@@ -30,6 +31,8 @@ export class ErdPanel {
 				if (message.type === 'ready') {
 					this.webviewReady = true;
 					this.pushLatestState();
+				} else if (message.type === 'export') {
+					void exportDiagramImage(message.format, message.dataBase64, message.suggestedName);
 				}
 			},
 			null,
