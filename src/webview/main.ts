@@ -1,5 +1,6 @@
 import { GraphModel } from '../shared/graphModel';
 import { HostToWebviewMessage, WebviewToHostMessage } from '../shared/protocol';
+import { exportSvgAsPngBase64 } from './exportImage';
 import { ViewportController } from './interaction';
 import { applyPositionOverrides, computeLayout } from './layout';
 import { renderGraph } from './svgRender';
@@ -17,6 +18,10 @@ function getDiagramContainer(): HTMLElement | null {
 
 function getBanner(): HTMLElement | null {
 	return document.getElementById('banner');
+}
+
+function getExportButton(): HTMLButtonElement | null {
+	return document.getElementById('export-button') as HTMLButtonElement | null;
 }
 
 function showBanner(text: string): void {
@@ -52,7 +57,42 @@ function renderModel(model: GraphModel): void {
 			}
 		});
 	}
+
+	const exportButton = getExportButton();
+	if (exportButton) {
+		exportButton.disabled = false;
+	}
 }
+
+async function handleExportClick(): Promise<void> {
+	const container = getDiagramContainer();
+	const svg = container?.querySelector('svg');
+	if (!svg) {
+		return;
+	}
+
+	const exportButton = getExportButton();
+	if (exportButton) {
+		exportButton.disabled = true;
+		exportButton.textContent = 'Exporting…';
+	}
+
+	try {
+		const dataBase64 = await exportSvgAsPngBase64(svg);
+		vscodeApi.postMessage({ type: 'export', format: 'png', dataBase64, suggestedName: 'prisma-erd.png' });
+	} catch (error) {
+		showBanner(`Failed to export diagram: ${error instanceof Error ? error.message : String(error)}`);
+	} finally {
+		if (exportButton) {
+			exportButton.disabled = false;
+			exportButton.textContent = 'Export PNG';
+		}
+	}
+}
+
+getExportButton()?.addEventListener('click', () => {
+	void handleExportClick();
+});
 
 window.addEventListener('message', (event: MessageEvent<HostToWebviewMessage>) => {
 	const message = event.data;
