@@ -19,7 +19,8 @@ export interface RelationDerivationResult {
 	warnings: string[];
 }
 
-function pairKey(a: string, b: string): string {
+/** Unordered model-pair key — a relation between A and B buckets the same regardless of direction. */
+export function pairKey(a: string, b: string): string {
 	return [a, b].sort().join('::');
 }
 
