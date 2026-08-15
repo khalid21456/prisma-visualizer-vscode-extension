@@ -21,7 +21,45 @@ export function getHtmlForWebview(webview: vscode.Webview, extensionUri: vscode.
 	<title>Prisma ERD</title>
 	<style>
 		html, body, #app { height: 100%; margin: 0; padding: 0; }
-		body { background: var(--vscode-editor-background); font-family: var(--vscode-font-family); }
+		body {
+			background: var(--vscode-editor-background);
+			font-family: var(--vscode-font-family);
+			/* Entity header: a deliberate blue, not a passthrough of the editor's title-bar color. */
+			--erd-header-bg: #2a78d6;
+			--erd-header-fg: #ffffff;
+			--erd-header-accent: #184f95;
+			/* Key markers get their own hue each, so PK/FK/unique read apart at a glance. */
+			--erd-pk-color: #eda100;
+			--erd-fk-color: #4a3aa7;
+			--erd-unique-color: #1baf7a;
+			/* Relation lines: blue for a resolved relation, orange dashed for a dangling one. */
+			--erd-edge-color: #2a78d6;
+			--erd-edge-unresolved-color: #eb6834;
+			--erd-row-alt-bg: rgba(42, 120, 214, 0.05);
+		}
+		body.vscode-dark {
+			--erd-header-bg: #3987e5;
+			--erd-header-accent: #1c5cab;
+			--erd-pk-color: #c98500;
+			--erd-fk-color: #9085e9;
+			--erd-unique-color: #199e70;
+			--erd-edge-color: #3987e5;
+			--erd-edge-unresolved-color: #d95926;
+			--erd-row-alt-bg: rgba(57, 135, 229, 0.08);
+		}
+		/* High-contrast themes are an accessibility setting, not a look — defer to VS Code's own
+		   (contrast-guaranteed) colors instead of asserting a fixed brand blue over them. */
+		body.vscode-high-contrast {
+			--erd-header-bg: var(--vscode-titleBar-activeBackground, #000000);
+			--erd-header-fg: var(--vscode-titleBar-activeForeground, #ffffff);
+			--erd-header-accent: var(--vscode-contrastBorder, #6fc3df);
+			--erd-pk-color: var(--vscode-terminal-ansiYellow, #f5f543);
+			--erd-fk-color: var(--vscode-terminal-ansiMagenta, #d670d6);
+			--erd-unique-color: var(--vscode-terminal-ansiCyan, #29b8db);
+			--erd-edge-color: var(--vscode-contrastActiveBorder, #6fc3df);
+			--erd-edge-unresolved-color: var(--vscode-terminal-ansiYellow, #f5f543);
+			--erd-row-alt-bg: transparent;
+		}
 		#app { position: relative; overflow: hidden; }
 		#diagram { width: 100%; height: 100%; }
 		#banner {

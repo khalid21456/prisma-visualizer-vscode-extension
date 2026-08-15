@@ -30,17 +30,17 @@ function fieldRowText(field: GraphModel['models'][number]['fields'][number]): st
 	return `${field.name}  ${field.type}${suffix}`;
 }
 
-function fieldKeyMarker(field: GraphModel['models'][number]['fields'][number]): string {
+function fieldKeyMarker(field: GraphModel['models'][number]['fields'][number]): { glyph: string; color: string } | null {
 	if (field.isId) {
-		return '⬤'; // ● primary key
+		return { glyph: '⬤', color: 'var(--erd-pk-color, #eda100)' }; // ● primary key — amber
 	}
 	if (field.isForeignKey) {
-		return '→'; // → foreign key
+		return { glyph: '→', color: 'var(--erd-fk-color, #4a3aa7)' }; // → foreign key — violet
 	}
 	if (field.isUnique) {
-		return '◇'; // ◇ unique
+		return { glyph: '◇', color: 'var(--erd-unique-color, #1baf7a)' }; // ◇ unique — teal
 	}
-	return '';
+	return null;
 }
 
 function renderNode(host: SVGGElement, node: PositionedNode, model: GraphModel): void {
@@ -65,7 +65,7 @@ function renderNode(host: SVGGElement, node: PositionedNode, model: GraphModel):
 		width: String(node.width),
 		height: String(HEADER_HEIGHT),
 		rx: '6',
-		fill: 'var(--vscode-titleBar-activeBackground, #3c3c3c)',
+		fill: 'var(--erd-header-bg, #2a78d6)',
 	});
 	group.appendChild(headerRect);
 	// square off the bottom corners of the rounded header so it doesn't bulge into the body
@@ -74,14 +74,23 @@ function renderNode(host: SVGGElement, node: PositionedNode, model: GraphModel):
 		y: String(HEADER_HEIGHT - 6),
 		width: String(node.width),
 		height: '6',
-		fill: 'var(--vscode-titleBar-activeBackground, #3c3c3c)',
+		fill: 'var(--erd-header-bg, #2a78d6)',
 	});
 	group.appendChild(headerMask);
+	// a thin accent line grounds the header against the body, echoing the header's own hue
+	const headerAccent = el('rect', {
+		x: '0',
+		y: String(HEADER_HEIGHT - 2),
+		width: String(node.width),
+		height: '2',
+		fill: 'var(--erd-header-accent, #184f95)',
+	});
+	group.appendChild(headerAccent);
 
 	const title = el('text', {
 		x: '10',
 		y: '18',
-		fill: 'var(--vscode-titleBar-activeForeground, #cccccc)',
+		fill: 'var(--erd-header-fg, #ffffff)',
 		'font-weight': '600',
 		'font-size': '13',
 	});
@@ -91,15 +100,26 @@ function renderNode(host: SVGGElement, node: PositionedNode, model: GraphModel):
 	modelNode.fields.forEach((field, i) => {
 		const rowY = HEADER_HEIGHT + i * FIELD_ROW_HEIGHT;
 
+		if (i % 2 === 1) {
+			const rowBg = el('rect', {
+				x: '0',
+				y: String(rowY),
+				width: String(node.width),
+				height: String(FIELD_ROW_HEIGHT),
+				fill: 'var(--erd-row-alt-bg, transparent)',
+			});
+			group.appendChild(rowBg);
+		}
+
 		const marker = fieldKeyMarker(field);
 		if (marker) {
 			const markerText = el('text', {
 				x: '10',
 				y: String(rowY + 14),
-				fill: 'var(--vscode-textLink-foreground, #3794ff)',
+				fill: marker.color,
 				'font-size': '9',
 			});
-			markerText.textContent = marker;
+			markerText.textContent = marker.glyph;
 			group.appendChild(markerText);
 		}
 
@@ -136,7 +156,7 @@ function renderEdge(
 	const path = el('path', {
 		d: pathData,
 		fill: 'none',
-		stroke: relation.resolved ? 'var(--vscode-charts-blue, #3794ff)' : 'var(--vscode-charts-orange, #d18616)',
+		stroke: relation.resolved ? 'var(--erd-edge-color, #2a78d6)' : 'var(--erd-edge-unresolved-color, #eb6834)',
 		'stroke-width': '1.5',
 		'stroke-dasharray': relation.resolved ? '' : '4 3',
 		'data-edge-id': edgeId,
@@ -180,7 +200,7 @@ function renderSelfRelationLoop(host: SVGGElement, node: PositionedNode, relatio
 	const path = el('path', {
 		d: `M ${startX} ${startY} C ${startX + loopOut} ${startY}, ${startX + loopOut} ${startY + 24}, ${startX} ${startY + 24}`,
 		fill: 'none',
-		stroke: relation.resolved ? 'var(--vscode-charts-blue, #3794ff)' : 'var(--vscode-charts-orange, #d18616)',
+		stroke: relation.resolved ? 'var(--erd-edge-color, #2a78d6)' : 'var(--erd-edge-unresolved-color, #eb6834)',
 		'stroke-width': '1.5',
 		'stroke-dasharray': relation.resolved ? '' : '4 3',
 		'data-edge-id': relation.id,
