@@ -19,6 +19,7 @@ export class ErdPanel {
 	private latestState: PanelState | undefined;
 	private webviewReady = false;
 	private watcherDisposable: vscode.Disposable | undefined;
+	private exportSqlHandler: (() => Promise<void>) | undefined;
 
 	private constructor(
 		private readonly panel: vscode.WebviewPanel,
@@ -33,6 +34,8 @@ export class ErdPanel {
 					this.pushLatestState();
 				} else if (message.type === 'export') {
 					void exportDiagramImage(message.format, message.dataBase64, message.suggestedName);
+				} else if (message.type === 'exportSql') {
+					void this.exportSqlHandler?.();
 				}
 			},
 			null,
@@ -58,6 +61,14 @@ export class ErdPanel {
 	watchSchema(schemaPath: string, onChange: () => void): void {
 		this.watcherDisposable?.dispose();
 		this.watcherDisposable = watchSchema(schemaPath, onChange);
+	}
+
+	/**
+	 * Registers what runs when the webview's Export SQL button is clicked. The panel deliberately
+	 * doesn't know the schema path — the command layer owns it and supplies this closure.
+	 */
+	onExportSql(handler: () => Promise<void>): void {
+		this.exportSqlHandler = handler;
 	}
 
 	setModel(model: GraphModel): void {

@@ -1,0 +1,24 @@
+model User {
+  id       Int       @id @default(autoincrement())
+  posts    Post[]
+  profile  Profile?
+  comments Comment[]
+}
+
+model Post {
+  id       Int    @id @default(autoincrement())
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  authorId Int
+}
+
+model Profile {
+  id     Int   @id @default(autoincrement())
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?  @unique
+}
+
+model Comment {
+  id       Int  @id @default(autoincrement())
+  author   User @relation(fields: [authorId], references: [id], map: "comment_author_constraint")
+  authorId Int
+}

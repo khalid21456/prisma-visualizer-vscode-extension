@@ -74,11 +74,15 @@ export function getHtmlForWebview(webview: vscode.Webview, extensionUri: vscode.
 			z-index: 1;
 		}
 		#banner.visible { display: block; }
-		#export-button {
+		#export-actions {
 			position: absolute;
 			bottom: 12px;
 			right: 12px;
 			z-index: 2;
+			display: flex;
+			gap: 8px;
+		}
+		#export-actions button {
 			padding: 6px 12px;
 			font-size: 12px;
 			font-family: var(--vscode-font-family);
@@ -88,15 +92,18 @@ export function getHtmlForWebview(webview: vscode.Webview, extensionUri: vscode.
 			color: var(--vscode-button-foreground, #ffffff);
 			cursor: pointer;
 		}
-		#export-button:hover:not(:disabled) { background: var(--vscode-button-hoverBackground, #1177bb); }
-		#export-button:disabled { opacity: 0.5; cursor: default; }
+		#export-actions button:hover:not(:disabled) { background: var(--vscode-button-hoverBackground, #1177bb); }
+		#export-actions button:disabled { opacity: 0.5; cursor: default; }
 	</style>
 </head>
 <body>
 	<div id="app">
 		<div id="diagram"></div>
 		<div id="banner"></div>
-		<button id="export-button" type="button" disabled>Export PNG</button>
+		<div id="export-actions">
+			<button id="export-sql-button" type="button" disabled>Export SQL</button>
+			<button id="export-button" type="button" disabled>Export PNG</button>
+		</div>
 	</div>
 	<script nonce="${cspNonce}" src="${scriptUri}"></script>
 </body>

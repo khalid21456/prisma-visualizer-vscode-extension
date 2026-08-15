@@ -24,6 +24,10 @@ function getExportButton(): HTMLButtonElement | null {
 	return document.getElementById('export-button') as HTMLButtonElement | null;
 }
 
+function getExportSqlButton(): HTMLButtonElement | null {
+	return document.getElementById('export-sql-button') as HTMLButtonElement | null;
+}
+
 function showBanner(text: string): void {
 	const banner = getBanner();
 	if (!banner) {
@@ -58,9 +62,10 @@ function renderModel(model: GraphModel): void {
 		});
 	}
 
-	const exportButton = getExportButton();
-	if (exportButton) {
-		exportButton.disabled = false;
+	for (const button of [getExportButton(), getExportSqlButton()]) {
+		if (button) {
+			button.disabled = false;
+		}
 	}
 }
 
@@ -89,6 +94,11 @@ async function handleExportClick(): Promise<void> {
 		}
 	}
 }
+
+// SQL is generated host-side from the full Prisma schema, so this is a plain request with no payload.
+getExportSqlButton()?.addEventListener('click', () => {
+	vscodeApi.postMessage({ type: 'exportSql' });
+});
 
 getExportButton()?.addEventListener('click', () => {
 	void handleExportClick();
