@@ -15,7 +15,12 @@
     "commands": [
       {
         "command": "prisma-visualizer.showERD",
-        "title": "Prisma Visualizer: Open ERD",
+        "title": "Open ERD",
+        "category": "Prisma Visualizer"
+      },
+      {
+        "command": "prisma-visualizer.exportSql",
+        "title": "Prisma Visualizer: Export PostgreSQL SQL",
         "category": "Prisma Visualizer"
       }
     ],
