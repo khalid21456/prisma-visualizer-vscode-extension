@@ -1,0 +1,13 @@
+model Account {
+  tenantId  Int
+  accountId Int
+  email     String @unique
+  region    String
+  nickname  String @map("nick_name")
+
+  @@id([tenantId, accountId])
+  @@unique([email, region])
+  @@index([region])
+  @@index([nickname], map: "custom_nickname_idx")
+  @@map("accounts")
+}
